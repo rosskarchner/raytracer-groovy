@@ -24,3 +24,59 @@ class ColorTest extends GroovyTestCase {
 		assert c1 * c2 == new Color(0.9, 0.2, 0.04)
 	}
 }
+
+class CanvasTest extends GroovyTestCase{
+	void 'test creating a canvas' (){
+		def c = new Canvas(10,20)
+		def black = new Color(0,0,0)
+
+		assert c.width == 10
+		assert c.height == 20
+		for (row in c.pixels) {
+			for (pixel in row){
+				assert pixel == black
+			}
+		}
+
+	}
+
+
+	void 'test writing a pixel' (){
+		def c = new Canvas(10,20)
+		def red = new Color(1,0,0)
+		c.write_pixel(2,3, red)
+		assert c.pixel_at(2,3) == red
+	}
+
+	void 'test constucting PPM header' (){
+		def c = new Canvas(5,3)
+		def ppm = c.to_ppm()
+		def lines = ppm.readLines()	
+		assert lines[0] == 'P3'
+		assert lines[1] == '5 3'
+		assert lines[2] == '255'
+
+	}
+
+	void 'test constructing PPM data' (){
+
+		def c = new Canvas(5,3)
+
+		def c1 = new Color(1.5,0,0)
+		def c2 = new Color(0,0.5,0)
+		def c3 = new Color(-0.5, 0, 1)
+		c.write_pixel(0,0,c1)
+		c.write_pixel(2, 1, c2)
+		c.write_pixel(4, 2, c3)
+		def ppm = c.to_ppm()
+		def lines = ppm.readLines()	
+		assert lines.size() == 6
+		assert lines[3] == '255 0 0 0 0 0 0 0 0 0 0 0 0 0 0'
+		assert lines[4] == '0 0 0 0 0 0 0 128 0 0 0 0 0 0 0'
+		assert lines[5] == '0 0 0 0 0 0 0 0 0 0 0 0 0 0 255'
+
+
+	}
+}
+
+

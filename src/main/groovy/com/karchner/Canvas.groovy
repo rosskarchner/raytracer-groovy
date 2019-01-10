@@ -52,3 +52,49 @@ class Color extends Tuple{
 	}
 
 }
+
+class Canvas {
+
+	int width
+	int height
+	Color[][] pixels
+
+	Canvas(int width, int height){
+		this.width = width
+		this.height = height
+		this.pixels = new Color[height][width]
+		def black = new Color(0,0,0)
+
+		for (row in 0..height-1){
+			for (column in 0..width-1){
+				this.pixels[row][column] = black	
+			}
+		}
+	}
+
+	def write_pixel(int column, int row, Color color){
+		this.pixels[row][column] = color
+	}		
+	
+	def pixel_at(int column,int row){
+		this.pixels[row][column]
+	}
+
+
+	def to_ppm(){
+		def ppm = """\
+		|P3
+		|5 3
+		|255""".stripMargin()
+
+		for (row in 0..height-1){
+			def line = "\n"
+			for (pixel in this.pixels[row]){
+				line += "${pixel.red * 255} ${pixel.green} ${pixel.blue}"
+			}
+		ppm += line
+		}
+
+		ppm
+	}
+}
