@@ -1,4 +1,5 @@
 package com.karchner.Canvas
+import java.lang.Math
 
 @groovy.transform.InheritConstructors
 class Color extends Tuple{
@@ -51,6 +52,16 @@ class Color extends Tuple{
 
 	}
 
+	def scaled(max){
+		this.collect {
+			def scaled_value = it * max
+			if (scaled_value < 0) 0
+			else if (scaled_value > max) max
+			else Math.round(scaled_value)
+		}
+
+	}
+
 }
 
 class Canvas {
@@ -65,17 +76,24 @@ class Canvas {
 		this.pixels = new Color[height][width]
 		def black = new Color(0,0,0)
 
-		for (row in 0..height-1){
-			for (column in 0..width-1){
-				this.pixels[row][column] = black	
-			}
-		}
+		this.fill_canvas(black)
+
 	}
 
 	def write_pixel(int column, int row, Color color){
 		this.pixels[row][column] = color
 	}		
 	
+	def fill_canvas(Color color){
+		for (row in 0..this.height-1){
+			for (column in 0..this.width-1){
+				this.pixels[row][column] = color
+			}
+		}
+
+
+	}
+
 	def pixel_at(int column,int row){
 		this.pixels[row][column]
 	}
@@ -84,15 +102,27 @@ class Canvas {
 	def to_ppm(){
 		def ppm = """\
 		|P3
-		|5 3
+		|${this.width} ${this.height}
 		|255""".stripMargin()
 
 		for (row in 0..height-1){
-			def line = "\n"
+			def ppm_data = []
 			for (pixel in this.pixels[row]){
-				line += "${pixel.red * 255} ${pixel.green} ${pixel.blue}"
+				def scaled = pixel.scaled(255)
+				ppm_data += scaled
 			}
-		ppm += line
+			def ppm_text_lines = [""]
+			for (value in ppm_data){
+				if (ppm_text_lines[-1].length() + value.toString().length() <= 70){
+
+				ppm_text_lines[-1] += value.toString() + " "
+
+				} else {
+
+					ppm_text_lines << value + " "
+				}
+			}
+		ppm += '\n' + ppm_text_lines.collect {it.trim()}.join('\n')
 		}
 
 		ppm

@@ -65,7 +65,7 @@ class CanvasTest extends GroovyTestCase{
 		def c1 = new Color(1.5,0,0)
 		def c2 = new Color(0,0.5,0)
 		def c3 = new Color(-0.5, 0, 1)
-		c.write_pixel(0,0,c1)
+		c.write_pixel(0, 0, c1)
 		c.write_pixel(2, 1, c2)
 		c.write_pixel(4, 2, c3)
 		def ppm = c.to_ppm()
@@ -76,6 +76,21 @@ class CanvasTest extends GroovyTestCase{
 		assert lines[5] == '0 0 0 0 0 0 0 0 0 0 0 0 0 0 255'
 
 
+	}
+
+	void 'test splitting long PPM lines' (){
+		def c = new Canvas(10,2)
+		c.fill_canvas(new Color(1, 0.8, 0.6))
+
+		def ppm = c.to_ppm()
+		def lines = ppm.readLines()	
+		def selection = lines[3..6].join('\n')
+
+		def expected = """255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204
+    |153 255 204 153 255 204 153 255 204 153 255 204 153
+    |255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204
+    |153 255 204 153 255 204 153 255 204 153 255 204 153""".stripMargin()
+		assert selection == expected
 	}
 }
 
