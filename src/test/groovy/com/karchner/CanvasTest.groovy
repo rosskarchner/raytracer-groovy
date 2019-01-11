@@ -92,6 +92,16 @@ class CanvasTest extends GroovyTestCase{
     |153 255 204 153 255 204 153 255 204 153 255 204 153""".stripMargin()
 		assert selection == expected
 	}
+
+	void 'test that PPM files are terminated with a newline' (){
+		def c = new Canvas(5,3)
+
+		def ppm = c.to_ppm()
+
+		assert ppm[-1] == '\n'
+
+
+	}
 }
 
 

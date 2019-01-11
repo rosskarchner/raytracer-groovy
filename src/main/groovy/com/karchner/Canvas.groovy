@@ -125,6 +125,6 @@ class Canvas {
 		ppm += '\n' + ppm_text_lines.collect {it.trim()}.join('\n')
 		}
 
-		ppm
+		ppm + '\n'
 	}
 }
