@@ -41,7 +41,7 @@ java {
 }
 
 application {
-    mainClass = 'com.karchner.Raytracer'
+    mainClass = 'com.karchner.RenderDemo'
 }
 
 repositories {
@@ -52,7 +52,7 @@ dependencies { // [4]
     // Groovy is provided by the Gradle groovy plugin
     implementation localGroovy()
     testImplementation localGroovy()
-    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.spockframework:spock-core:2.3-groovy-4.0'
 }
 
 task fatjar(type: Jar) {

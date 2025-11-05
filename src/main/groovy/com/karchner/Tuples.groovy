@@ -6,10 +6,7 @@ class RTTuple extends Tuple implements Comparable{
 
 		
 	RTTuple(Number... nums){
-
-	super(nums.collect{
-		it.toDouble()
-		})
+		super(*(nums.collect{ it.toDouble() }))
 	}
 	def getx(){
 		return this[0]
@@ -26,16 +23,15 @@ class RTTuple extends Tuple implements Comparable{
 	}
 
 	int compareTo(other){
-	// TODO: support other comparisons
 		if (this.getClass() != other.getClass()){
 			return 1
 		}
 		def EPSILON=0.00001
 
 		def differences = [0,1,2,3].collect{
-		this[it] - other[it]	
+		this[it] - other[it]
 			}
-	 	if (differences.any { it > EPSILON}){
+	 	if (differences.any { Math.abs(it) > EPSILON}){
 			return 1
 		} else {
 			return 0
@@ -88,7 +84,7 @@ class RTTuple extends Tuple implements Comparable{
 	}
 	
 	def equals(RTTuple otherTuple){
-		return true	
+		return this.compareTo(otherTuple) == 0
 	}
 	RTTuple negative(){
 		return new RTTuple(0,0,0,0).minus(this)
@@ -108,11 +104,11 @@ class TupleHelpers {
 	// seems like these should be alternate constructors
        // for RTTuple
 	public RTTuple point (double x, double y, double z){
-		new RTTuple(x,y,z,1.0)
+		return new RTTuple(x,y,z,1.0)
 	}
 
 	public RTTuple vector (double x, double y, double z){
-		new RTTuple(x,y,z,0.0)
+		return new RTTuple(x,y,z,0.0)
 	}
 
 	public RTTuple normalize(RTTuple v){
